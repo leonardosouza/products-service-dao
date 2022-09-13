@@ -1,24 +1,23 @@
-const express = require("express");
-const router = express.Router();
+const { Router } = require("express");
+const router = Router();
+const ProductsController = require("../controllers/productsController");
 
 // Create - Criando um produto
-router.post("/", (req, res) => console.log("POST", req.body));
+router.post("/", ProductsController.createProduct);
 
 // Read - Pegando os produtos
-router.get("/", (req, res) =>
-  console.log("GET 1", req.query, req.baseUrl, req.url)
-);
+router.get("/", ProductsController.getAllProducts);
 
 // Read - Pegando um produto
-router.get("/:id", (req, res) => console.log("GET 2", req.params.id));
+router.get("/:id", ProductsController.getProductById);
 
 // Update - Atualizando um produto (total)
-router.put("/:id", (req, res) => console.log("PUT", req.params.id));
+router.put("/:id", ProductsController.updateProduct);
 
 // Update - Atualizando um produto (parcial)
-router.patch("/:id", (req, res) => console.log("PATCH", req.params.id));
+router.patch("/:id", ProductsController.updateProductPartial);
 
 // Delete - Excluindo um produto
-router.delete("/:id", (req, res) => console.log("DELETE", req.params.id));
+router.delete("/:id", ProductsController.removeProduct);
 
 module.exports = router;
