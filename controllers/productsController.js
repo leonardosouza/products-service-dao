@@ -1,3 +1,4 @@
+const dbClient = require("../infra/dbClient");
 const ProductDAO = require("../dao/productDao");
 console.log(ProductDAO);
 
@@ -11,6 +12,12 @@ class ProductsController {
   getAllProducts(req, res) {
     console.log("GET 1", req.query, req.baseUrl, req.url);
     ProductDAO.findAll();
+
+    const sql = "SELECT * FROM public.products";
+    dbClient.query(sql, (err, result) => {
+      console.log("ERR", err);
+      console.log("RESULT", result.rowCount, result.rows);
+    });
   }
 
   getProductById(req, res) {
