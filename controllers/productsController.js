@@ -1,28 +1,38 @@
 const dbClient = require("../infra/dbClient");
-const ProductDAO = require("../dao/productDao");
-console.log(ProductDAO);
+const ProductDAO = require("../dao/productDao")(dbClient);
 
 // Abordagem 1 - Classes
 class ProductsController {
   createProduct(req, res) {
-    console.log("POST", req.body);
-    ProductDAO.save();
+    ProductDAO.save(req.body, (id, err, result) => {
+      if (err) {
+        res.status(500).json({ error: err });
+      } else {
+        res.status(201).json({ ...req.body, id });
+      }
+    });
   }
 
   getAllProducts(req, res) {
-    console.log("GET 1", req.query, req.baseUrl, req.url);
-    ProductDAO.findAll();
-
-    const sql = "SELECT * FROM public.products";
-    dbClient.query(sql, (err, result) => {
-      console.log("ERR", err);
-      console.log("RESULT", result.rowCount, result.rows);
+    ProductDAO.findAll((err, result) => {
+      if (err) {
+        res.status(500).json({ error: err });
+      } else {
+        res.status(200).json(result.rows);
+      }
     });
   }
 
   getProductById(req, res) {
-    console.log("GET 2", req.params.id);
-    ProductDAO.findOne();
+    ProductDAO.findOne(req.params.id, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err });
+      } else if (result.rowCount) {
+        res.status(200).json(result.rows[0]);
+      } else {
+        res.status(404).json({ message: `product not found` });
+      }
+    });
   }
 
   updateProduct(req, res) {
@@ -36,8 +46,13 @@ class ProductsController {
   }
 
   removeProduct(req, res) {
-    console.log("DELETE", req.params.id);
-    ProductDAO.removeOne();
+    ProductDAO.removeOne(req.params.id, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err });
+      } else {
+        res.status(204).end();
+      }
+    });
   }
 }
 
