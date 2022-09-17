@@ -23,9 +23,31 @@ class ProductDAO {
     this.db.query(sql, [id], callback);
   }
 
-  updateComplete() {}
+  updateComplete(id, body, callback) {
+    const { name, price, quantity } = body;
+    const sql = `UPDATE public.products SET
+                    name = $1,
+                    price = $2,
+                    quantity = $3
+                 WHERE
+                    id = $4`;
+    this.db.query(sql, [name, price, quantity, id], callback);
+  }
 
-  updatePartial() {}
+  updatePartial(id, body, callback) {
+    const fields = [];
+
+    for (const key in body) {
+      fields.push(`${key}='${body[key]}'`);
+    }
+
+    const sql = `UPDATE public.products SET
+                    ${fields}
+                 WHERE
+                    id = $1`;
+
+    this.db.query(sql, [id], callback);
+  }
 
   removeOne(id, callback) {
     const sql = "DELETE FROM public.products WHERE id = $1";

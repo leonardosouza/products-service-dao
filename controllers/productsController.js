@@ -36,13 +36,23 @@ class ProductsController {
   }
 
   updateProduct(req, res) {
-    console.log("PUT", req.params.id, req.body);
-    ProductDAO.updateComplete();
+    ProductDAO.updateComplete(req.params.id, req.body, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err });
+      } else {
+        res.status(204).end();
+      }
+    });
   }
 
   updateProductPartial(req, res) {
-    console.log("PATCH", req.params.id, req.body);
-    ProductDAO.updatePartial();
+    ProductDAO.updatePartial(req.params.id, req.body, (err, result) => {
+      if (err) {
+        res.status(500).json({ error: err });
+      } else {
+        res.status(204).end();
+      }
+    });
   }
 
   removeProduct(req, res) {
